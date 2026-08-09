@@ -1,35 +1,36 @@
-# 🚗 Route Optimization System
+# Route Optimization System
 
-A real-world route optimization system that finds efficient routes between two geographical locations using **Dijkstra's Algorithm** and **A* Search** on a road network generated from **OpenStreetMap** data.
+A real-world route optimization system that finds efficient routes between two geographical locations using Dijkstra's Algorithm and A* Search on a road network generated from OpenStreetMap data.
 
-The project converts real-world road data into a weighted graph and uses graph traversal algorithms to calculate an optimized route between a source and destination.
-
----
-
-## 📌 Features
-
-* 🗺️ Uses real-world road network data from **OpenStreetMap**
-* 📍 Finds the nearest graph nodes to source and destination coordinates
-* 🧠 Implements **Dijkstra's Algorithm**
-* ⚡ Implements **A* Search Algorithm**
-* 🏗️ Custom graph data structure
-* ⏱️ Compares algorithm performance
-* 🔄 Uses a custom **Priority Queue**
-* 📊 Calculates route distance and path
-* 🌐 Node.js backend with Express
+The system converts real-world road data into a weighted graph and applies graph pathfinding algorithms to calculate an optimized route between a source and destination.
 
 ---
 
-## 🧠 Algorithms Used
+## Features
+
+* Uses real-world road network data from OpenStreetMap
+* Finds the nearest graph nodes to source and destination coordinates
+* Implements Dijkstra's Algorithm
+* Implements A* Search Algorithm
+* Custom graph data structure
+* Custom Priority Queue implementation
+* Compares algorithm performance
+* Calculates route distance and path
+* Node.js and Express backend
+* Visualizes the calculated route on a map
+
+---
+
+## Algorithms Used
 
 ### 1. Dijkstra's Algorithm
 
-Dijkstra's algorithm finds the shortest path from a source node to a destination node in a weighted graph.
+Dijkstra's algorithm finds the shortest path between nodes in a weighted graph.
 
 In this project:
 
-* Each road intersection is represented as a graph node.
-* Roads connecting intersections are represented as edges.
+* Each road intersection or geographical point is represented as a graph node.
+* Roads connecting nodes are represented as edges.
 * Edge weights represent geographical distance.
 * A priority queue is used to process the node with the smallest known distance.
 
@@ -51,88 +52,60 @@ Where:
 
 For geographical routing, the distance between coordinates can be used as the heuristic.
 
-### Why use both?
+### Why Use Both?
 
-Dijkstra guarantees the shortest path but can explore many unnecessary nodes.
+Dijkstra guarantees the shortest path but may explore a large portion of the graph before reaching the destination.
 
-A* uses geographical information about the destination to guide the search, which can reduce the number of nodes explored and improve response time.
+A* uses geographical information about the destination to guide the search toward the goal. This can reduce unnecessary exploration and improve search efficiency.
 
-Comparing both algorithms allows us to study the trade-off between **search efficiency and execution time**.
+Comparing both algorithms allows us to study the trade-off between search efficiency and execution time.
 
 ---
 
-## 🗺️ Road Network
+## Road Network
 
-The project uses **OpenStreetMap** road data to create a real-world road graph.
+The project uses OpenStreetMap road data to create a real-world road graph.
 
-The process is:
+The overall process is:
 
 ```text
 OpenStreetMap
-      ↓
+      |
+      v
 Road Data
-      ↓
+      |
+      v
 Graph Construction
-      ↓
+      |
+      v
 Find Nearest Nodes
-      ↓
+      |
+      v
 Dijkstra / A*
-      ↓
+      |
+      v
 Optimized Route
 ```
 
-Each road network is represented as a weighted graph where:
+The road network is represented as a weighted graph:
 
 ```text
-Node → Road intersection / geographical point
+Node   -> Road intersection or geographical point
 
-Edge → Road connecting two nodes
+Edge   -> Road connecting two nodes
 
-Weight → Distance between connected nodes
+Weight -> Distance between connected nodes
 ```
 
 ---
 
-## 🏗️ Project Structure
+## How the System Works
 
-```text
-route-optimization/
-│
-├── algorithms/
-│   ├── PriorityQueue.js
-│   ├── astar.js
-│   └── dijkstra.js
-│
-├── data/
-│   ├── buildGraph.js
-│   ├── compareAlgorithms.js
-│   ├── getRoads.js
-│   ├── roads.json
-│   ├── testAstar.js
-│   └── testRoute.js
-│
-├── graph/
-│   └── Graph.js
-│
-├── utils/
-│   ├── distance.js
-│   └── nearestNode.js
-│
-├── server.js
-├── package.json
-├── package-lock.json
-└── .gitignore
-```
-
----
-
-## 🔄 How the System Works
-
-### Step 1 — Retrieve Road Data
+### Step 1 - Retrieve Road Data
 
 Road network information is obtained from OpenStreetMap using road data queries.
 
-### Step 2 — Build the Graph
+### Step 2 - Build the Graph
 
 The road data is converted into a graph containing:
 
@@ -140,23 +113,25 @@ The road data is converted into a graph containing:
 * Edges
 * Distance weights
 
-### Step 3 — Find Nearest Nodes
+### Step 3 - Find Nearest Nodes
 
-User coordinates may not exactly match a graph node.
+User coordinates may not exactly correspond to a graph node.
 
-The system therefore finds the geographically nearest graph node to:
+The system therefore finds the geographically nearest graph node for both the source and destination.
 
 ```text
-Source coordinates
-        ↓
-Nearest source node
+Source Coordinates
+        |
+        v
+Nearest Source Node
 
-Destination coordinates
-        ↓
-Nearest destination node
+Destination Coordinates
+        |
+        v
+Nearest Destination Node
 ```
 
-### Step 4 — Run Pathfinding
+### Step 4 - Run Pathfinding
 
 The graph is passed to either:
 
@@ -164,28 +139,30 @@ The graph is passed to either:
 Dijkstra
 ```
 
-or
+or:
 
 ```text
 A*
 ```
 
-### Step 5 — Generate Route
+### Step 5 - Reconstruct the Route
 
-The algorithm reconstructs the path from the destination back to the source using predecessor information.
+The algorithm stores predecessor information while searching.
+
+Once the destination is reached, the path is reconstructed by tracing the predecessors back from the destination to the source.
 
 ---
 
-## ⚡ Priority Queue
+## Priority Queue
 
-A priority queue is essential for efficient pathfinding.
+A priority queue is an important component of both pathfinding algorithms.
 
-Instead of processing nodes randomly, the algorithm always selects the node with the smallest priority.
+Instead of processing nodes in an arbitrary order, the algorithm always selects the node with the most promising priority.
 
 For Dijkstra:
 
 ```text
-Priority = current shortest distance
+Priority = g(n)
 ```
 
 For A*:
@@ -194,78 +171,113 @@ For A*:
 Priority = g(n) + h(n)
 ```
 
-This allows the algorithms to efficiently explore promising nodes first.
+This allows the algorithms to process promising nodes first and avoid unnecessary exploration.
 
 ---
 
-## 🛠️ Technologies Used
+## Project Structure
 
-| Technology           | Purpose                     |
-| -------------------- | --------------------------- |
-| JavaScript           | Core programming language   |
-| Node.js              | Backend runtime             |
-| Express.js           | Server                      |
-| OpenStreetMap        | Real-world road data        |
-| Graph Data Structure | Road network representation |
-| Dijkstra             | Shortest path algorithm     |
-| A*                   | Heuristic-based pathfinding |
-| Priority Queue       | Efficient node selection    |
+```text
+route-optimization/
+|
+|-- backend/
+|   |
+|   |-- algorithms/
+|   |   |-- PriorityQueue.js
+|   |   |-- astar.js
+|   |   `-- dijkstra.js
+|   |
+|   |-- data/
+|   |   |-- buildGraph.js
+|   |   |-- compareAlgorithms.js
+|   |   |-- getRoads.js
+|   |   |-- roads.json
+|   |   |-- testAstar.js
+|   |   `-- testRoute.js
+|   |
+|   |-- graph/
+|   |   `-- Graph.js
+|   |
+|   |-- utils/
+|   |   |-- distance.js
+|   |   `-- nearestNode.js
+|   |
+|   |-- server.js
+|   |-- package.json
+|   `-- package-lock.json
+|
+|-- Screenshots/
+|   |-- route-map.png
+|   `-- algorithm-comparison.png
+|
+|-- README.md
+`-- .gitignore
+```
 
 ---
 
-## 🚀 Installation
+## Technologies Used
 
-### 1. Clone the repository
+| Technology           | Purpose                      |
+| -------------------- | ---------------------------- |
+| JavaScript           | Core programming language    |
+| Node.js              | Backend runtime              |
+| Express.js           | Web server                   |
+| OpenStreetMap        | Real-world road network data |
+| Graph Data Structure | Road network representation  |
+| Dijkstra             | Shortest path algorithm      |
+| A*                   | Heuristic-based pathfinding  |
+| Priority Queue       | Efficient node selection     |
+
+---
+
+## Installation and Setup
+
+### 1. Clone the Repository
 
 ```bash
 git clone https://github.com/psanskar/route-optimization.git
 ```
 
-### 2. Navigate to the backend
+### 2. Navigate to the Backend
 
 ```bash
 cd route-optimization/backend
 ```
 
-If the repository itself is the backend project, simply run:
-
-```bash
-cd route-optimization
-```
-
-### 3. Install dependencies
+### 3. Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 4. Start the server
+### 4. Start the Server
 
 ```bash
 node server.js
 ```
 
-The application can then be accessed through the local server address shown in the terminal.
+The application will start on the local server address displayed in the terminal.
 
 ---
 
-## 🧪 Testing Algorithms
+## Testing Algorithms
 
-The project contains test scripts for evaluating the routing algorithms.
+The project includes scripts for testing and comparing the routing algorithms.
 
-Examples include:
+### Test Dijkstra
 
 ```bash
 node data/testRoute.js
 ```
 
-and:
+### Test A*
 
 ```bash
 node data/testAstar.js
 ```
 
-Algorithm comparison can also be performed using:
+### Compare Algorithms
 
 ```bash
 node data/compareAlgorithms.js
@@ -273,51 +285,66 @@ node data/compareAlgorithms.js
 
 ---
 
-## 📊 Dijkstra vs A*
+## Dijkstra vs A*
 
-| Feature                | Dijkstra   | A*            |
-| ---------------------- | ---------- | ------------- |
-| Shortest path          | ✅          | ✅             |
-| Uses heuristic         | ❌          | ✅             |
-| Search direction       | Uninformed | Goal-directed |
-| Can explore more nodes | Yes        | Usually fewer |
-| Suitable for routing   | ✅          | ✅             |
-| Priority calculation   | `g(n)`     | `g(n) + h(n)` |
+| Feature                           | Dijkstra   | A*            |
+| --------------------------------- | ---------- | ------------- |
+| Shortest path                     | Yes        | Yes           |
+| Uses heuristic                    | No         | Yes           |
+| Search strategy                   | Uninformed | Goal-directed |
+| Typically explores fewer nodes    | No         | Yes           |
+| Suitable for geographical routing | Yes        | Yes           |
+| Priority calculation              | `g(n)`     | `g(n) + h(n)` |
 
-The actual performance depends on the road network and source/destination locations.
+The actual performance depends on the size and structure of the road network and the selected source and destination.
 
 ---
 
-## 🎯 Applications
+## Screenshots
 
-This project demonstrates concepts applicable to:
+### Route Map
+
+The application visualizes the calculated route between the selected source and destination on the road network.
+
+![Route Map](Screenshots/route-map.png)
+
+### Algorithm Comparison
+
+Performance comparison between Dijkstra's Algorithm and A* Search.
+
+![Algorithm Comparison](Screenshots/algorithm-comparison.png)
+
+---
+
+## Applications
+
+The concepts demonstrated in this project can be applied to:
 
 * GPS navigation
-* Logistics
-* Delivery route planning
-* Transportation systems
-* Emergency response routing
+* Logistics and delivery route planning
 * Fleet management
-* Map-based applications
+* Emergency response routing
+* Transportation systems
+* Map-based delivery applications
 
 ---
 
-## 🔮 Future Improvements
+## Future Improvements
 
 Possible improvements include:
 
-* 🚦 Real-time traffic integration
-* 🚚 Vehicle-specific routing
-* ⛽ Fuel/cost optimization
-* 📍 Interactive map interface
-* 🕒 ETA calculation
-* 🌐 Multiple route alternatives
-* 📊 More detailed algorithm benchmarking
-* ☁️ Deployment as a web application
+* Real-time traffic integration
+* Vehicle-specific routing
+* Fuel and cost optimization
+* ETA calculation
+* Interactive map improvements
+* Multiple route alternatives
+* Advanced algorithm benchmarking
+* Deployment as a web application
 
 ---
 
-## 👨‍💻 Author
+## Author
 
 **Sanskar Patil**
 
@@ -326,6 +353,8 @@ https://github.com/psanskar
 
 ---
 
-## ⭐ Project Goal
+## Project Goal
 
-The goal of this project is to demonstrate how classical graph algorithms can be applied to **real-world geographical road networks** to solve route optimization problems.
+The goal of this project is to demonstrate how classical graph algorithms and data structures can be applied to real-world geographical road networks to solve route optimization problems.
+
+The project combines OpenStreetMap data, graph representation, Dijkstra's algorithm, A* search, nearest-node mapping, and priority queues to create a practical route optimization system.
