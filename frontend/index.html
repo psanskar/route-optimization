@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Route Optimization System</title>
+
+    <!-- Leaflet CSS -->
+    <link
+        rel="stylesheet"
+        href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    >
+
+    <!-- Project CSS -->
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <!-- =========================
+         HEADER
+    ========================== -->
+
+    <header class="header">
+
+        <div>
+
+            <h1>
+                🚗 Route Optimization System
+            </h1>
+
+            <p>
+                Smart shortest-path navigation using Dijkstra and A*
+            </p>
+
+        </div>
+
+    </header>
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="container">
+
+
+        <!-- =========================
+             ROUTE PLANNER
+        ========================== -->
+
+        <section class="planner-section">
+
+
+            <!-- Controls -->
+
+            <div class="controls">
+
+                <h2>Plan Your Route</h2>
+
+                <p class="section-description">
+                    Select two points on the map to calculate
+                    the optimal route.
+                </p>
+
+
+                <!-- Source -->
+
+                <label for="source">
+                    Starting Point
+                </label>
+
+                <input
+                    type="text"
+                    id="source"
+                    placeholder="Click on the map"
+                    readonly
+                >
+
+
+                <!-- Destination -->
+
+                <label for="destination">
+                    Destination
+                </label>
+
+                <input
+                    type="text"
+                    id="destination"
+                    placeholder="Click on the map"
+                    readonly
+                >
+
+
+                <!-- Algorithm -->
+
+                <label for="algorithm">
+                    Routing Algorithm
+                </label>
+
+                <select id="algorithm">
+
+                    <option value="dijkstra">
+                        Dijkstra
+                    </option>
+
+                    <option value="astar">
+                        A*
+                    </option>
+
+                </select>
+
+
+                <!-- Buttons -->
+
+                <div class="button-group">
+
+                    <button
+                        id="findRoute"
+                        class="primary-button"
+                    >
+                        Find Route
+                    </button>
+
+                    <button
+                        id="compareAlgorithms"
+                        class="secondary-button"
+                    >
+                        Compare
+                    </button>
+
+                    <button
+                        id="resetRoute"
+                        class="reset-button"
+                    >
+                        Reset
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <!-- =========================
+                 MAP
+            ========================== -->
+
+            <div class="map-container">
+
+                <div id="map"></div>
+
+                <div class="map-legend">
+
+                    <div class="legend-item">
+
+                        <span
+                            class="legend-marker source-marker"
+                        ></span>
+
+                        <span>
+                            Starting Point
+                        </span>
+
+                    </div>
+
+
+                    <div class="legend-item">
+
+                        <span
+                            class="legend-marker destination-marker"
+                        ></span>
+
+                        <span>
+                            Destination
+                        </span>
+
+                    </div>
+
+
+                    <div class="legend-item">
+
+                        <span class="legend-line"></span>
+
+                        <span>
+                            Optimized Route
+                        </span>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             ROUTE SUMMARY
+        ========================== -->
+
+        <section class="route-info">
+
+            <div class="section-title">
+
+                <h2>
+                    Route Summary
+                </h2>
+
+            </div>
+
+
+            <div class="route-details">
+
+
+                <div class="info-box">
+
+                    <span class="info-label">
+                        Distance
+                    </span>
+
+                    <span id="distance">
+                        --
+                    </span>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span class="info-label">
+                        Estimated Time
+                    </span>
+
+                    <span id="eta">
+                        --
+                    </span>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span class="info-label">
+                        Algorithm
+                    </span>
+
+                    <span id="selectedAlgorithm">
+                        Dijkstra
+                    </span>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span class="info-label">
+                        Nodes Explored
+                    </span>
+
+                    <span id="nodesExplored">
+                        --
+                    </span>
+
+                </div>
+
+
+                <div class="info-box">
+
+                    <span class="info-label">
+                        Calculation Time
+                    </span>
+
+                    <span id="executionTime">
+                        --
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =========================
+             ALGORITHM COMPARISON
+        ========================== -->
+
+        <section class="comparison-section">
+
+            <h2>
+                Algorithm Comparison
+            </h2>
+
+            <p class="section-description">
+                Compare the performance of Dijkstra and A*
+                for the selected route.
+            </p>
+
+
+            <div class="comparison-grid">
+
+
+                <!-- DIJKSTRA -->
+
+                <div class="comparison-card dijkstra-card">
+
+                    <div class="algorithm-title">
+
+                        <h3>
+                            Dijkstra
+                        </h3>
+
+                    </div>
+
+
+                    <div class="comparison-row">
+
+                        <span>
+                            Nodes Explored
+                        </span>
+
+                        <strong id="dijkstraNodes">
+                            --
+                        </strong>
+
+                    </div>
+
+
+                    <div class="comparison-row">
+
+                        <span>
+                            Execution Time
+                        </span>
+
+                        <strong id="dijkstraTime">
+                            --
+                        </strong>
+
+                    </div>
+
+
+                    <div class="comparison-row">
+
+                        <span>
+                            Distance
+                        </span>
+
+                        <strong id="dijkstraDistance">
+                            --
+                        </strong>
+
+                    </div>
+
+                </div>
+
+
+                <!-- A STAR -->
+
+                <div class="comparison-card astar-card">
+
+                    <div class="algorithm-title">
+
+                        <h3>
+                            A*
+                        </h3>
+
+                    </div>
+
+
+                    <div class="comparison-row">
+
+                        <span>
+                            Nodes Explored
+                        </span>
+
+                        <strong id="astarNodes">
+                            --
+                        </strong>
+
+                    </div>
+
+
+                    <div class="comparison-row">
+
+                        <span>
+                            Execution Time
+                        </span>
+
+                        <strong id="astarTime">
+                            --
+                        </strong>
+
+                    </div>
+
+
+                    <div class="comparison-row">
+
+                        <span>
+                            Distance
+                        </span>
+
+                        <strong id="astarDistance">
+                            --
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- Comparison Result -->
+
+            <div id="routeStatus">
+                Select source and destination to begin.
+            </div>
+            <div id="comparisonResult">
+
+                Select source and destination,
+                then compare.
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================
+         LEAFLET JS
+    ========================== -->
+
+    <script
+        src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    ></script>
+
+
+    <!-- Project JS -->
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>
