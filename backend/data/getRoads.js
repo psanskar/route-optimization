@@ -100,23 +100,41 @@ async function getRoads() {
 
             for (const url of overpassServers) {
 
-                const response = await fetch(url, {
+                try {
 
-                    method: "POST",
+                    const response = await fetch(url, {
 
-                    headers: {
-                        "Content-Type": "application/x-www-form-urlencoded",
-                        "User-Agent": "RouteOptimizationProject/1.0"
-                    },
+                        method: "POST",
 
-                    body: `data=${encodeURIComponent(makeQuery(area))}`
-                });
+                        headers: {
+                            "Content-Type": "application/x-www-form-urlencoded",
+                            "User-Agent": "RouteOptimizationProject/1.0"
+                        },
 
-                console.log("Overpass status:", response.status);
+                        body: `data=${encodeURIComponent(makeQuery(area))}`
+                    });
 
-                if (response.ok) {
-                    data = await response.json();
-                    break;
+                    console.log("Overpass status:", response.status);
+
+                    if (response.ok) {
+                        data = await response.json();
+                        break;
+                    }
+
+                    console.log(
+                        "Overpass server failed. Trying next server..."
+                    );
+
+                } catch (error) {
+
+                    console.log(
+                        "Overpass request failed:",
+                        error.message
+                    );
+
+                    console.log(
+                        "Trying next Overpass server..."
+                    );
                 }
             }
 
