@@ -4,19 +4,18 @@ const path = require("path");
 const filePath = path.join(__dirname, "roads.json");
 const metadataPath = path.join(__dirname, "roads.metadata.json");
 
-// Covers Thane, Navi Mumbai and Panvel. Keep this value in the cache metadata
+// Covers Thane and Navi Mumbai. Keep this value in the cache metadata
 // so a previous, smaller roads.json is never accidentally reused.
 const coverage = {
-    name: "Thane - Navi Mumbai - Panvel",
-    bounds: [18.92, 72.82, 19.36, 73.24]
+    name: "Thane - Navi Mumbai",
+    bounds: [19.00, 72.82, 19.36, 73.18]
 };
 
-// Smaller requests are much more reliable than one large Overpass request.
-// Together they overlap slightly so that routes can cross regional boundaries.
+// Smaller requests are more reliable than one large Overpass request.
+// The areas overlap slightly so that routes can cross regional boundaries.
 const downloadAreas = [
     [19.13, 72.82, 19.36, 73.12], // Thane
-    [19.00, 72.90, 19.22, 73.18], // Navi Mumbai / Airoli / Belapur
-    [18.92, 73.04, 19.10, 73.24]  // Panvel
+    [19.00, 72.90, 19.22, 73.18]  // Navi Mumbai / Airoli / Belapur
 ];
 
 const overpassServers = [
