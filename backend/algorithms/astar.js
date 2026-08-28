@@ -1,15 +1,25 @@
 const PriorityQueue = require("./PriorityQueue");
 const calculateDistance = require("../utils/distance");
 
-function getCoordinates(node) {
+const coordinateCache = new Map();
 
-    const parts = node.split(",");
+    function getCoordinates(node) {
 
-    return {
-        lat: Number(parts[0]),
-        lon: Number(parts[1])
-    };
-}
+        if (coordinateCache.has(node)) {
+            return coordinateCache.get(node);
+        }
+
+        const [lat, lon] = node.split(",").map(Number);
+
+        const coordinates = {
+            lat,
+            lon
+        };
+
+        coordinateCache.set(node, coordinates);
+
+        return coordinates;
+    }
 
 function astar(graph, start, end) {
 
@@ -20,6 +30,7 @@ function astar(graph, start, end) {
     const visited = new Set();
 
     const pq = new PriorityQueue();
+
 
     // Initialize distances
     for (const node in graph) {
